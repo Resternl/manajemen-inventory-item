@@ -8,8 +8,12 @@ Route::get('/', function () {
 });
 
 Route::get('/', function ()  {
-    return view('home');
+    return view('inventory.index');
 });
+
+Route::get('/', [Inven::class, 'index']);
+
+Route::resource('products', Inven::class);
 
 Route::resource(
     'inventory', inven::class

@@ -14,7 +14,7 @@ class inven extends Controller
     public function index()
     {
         $inventory = item::all();
-        return view('inventory.index', compact('inventory'));
+        return view('index', compact('inventory'));
     }
 
     /**
@@ -22,7 +22,7 @@ class inven extends Controller
      */
     public function create()
     {
-        //
+        return view('form');
     }
 
     /**
@@ -53,7 +53,7 @@ class inven extends Controller
     public function edit(string $id)
     {
         $item = item::findOrFail($id);
-        return view ('inventory.edit', compact('item'));
+        return view ('form', compact('item'));
     }
 
     /**
