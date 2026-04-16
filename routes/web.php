@@ -8,9 +8,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/', function () {
+    return view('index');
+})->middleware(['auth', 'verified'])->name('inventory.index');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [inven::class, 'index'])->name('inventory.index');
