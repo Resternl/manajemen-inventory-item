@@ -50,8 +50,6 @@
                             </form>
                         </div>
                     </div>
-                </div>
-            </div>
         </aside>
 
         <main class="flex-1 ml-64 p-10">
