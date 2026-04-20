@@ -24,11 +24,12 @@ public function index(Request $request)
     }
 
     if ($request->filled('aksi')) {
-        $query->where('action', $request->aksi);
+        $query->where('action', 'like', '%' . $request->aksi . '%');
     }
 
     $logs = $query->latest()->get();
     $users = riwayat::select('username')->distinct()->get();
+    
     return view('logs', compact('logs', 'users'));
 }
 }

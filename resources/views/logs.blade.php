@@ -1,75 +1,141 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="p-8">
-    <h2 class="text-2xl font-bold mb-6">Riwayat Aktifitas</h2>
-
-    <form action="{{ route('inventory.logs') }}" method="GET" class="flex gap-3 mb-8">
-    <div class="relative flex-grow">
-        <input type="text" name="search" value="{{ request('search') }}" 
-            placeholder="Cari nama barang..." 
-            class="w-full pl-12 pr-4 py-2 rounded-2xl  focus:ring-0 focus:border-[#003CBB] outline-none font-bold ">
-        <div class="absolute left-4 top-1/2 -translate-y-1/2 text-medium">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-            </svg>
-        </div>
+<div class="max-w-7xl mx-auto mt-6 px-4">
+    <div class="flex justify-between items-center mb-4 border-b border-gray-300 pb-4">
+        <h1 class="text-2xl font-bold text-[#111]">Riwayat Aktifitas</h1>
+        <a href="{{ route('inventory.index') }}" class="bg-[#003CBB] text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-[#003199] transition font-medium">
+            ← Kembali ke Dashboard
+        </a>
     </div>
 
-        <select name="user" class="border border-black rounded-xl px-4 focus:outline-none font-medium">
-            <option value="">Semua User</option>
-            @foreach($users as $u)
-                <option value="{{ $u->username }}" {{ request('user') == $u->username ? 'selected' : '' }}>{{ $u->username }}</option>
-            @endforeach
-        </select>
-
-        <select name="aksi" class="border border-black rounded-xl px-4  focus:outline-none font-medium">
-            <option value="">Semua Aktifitas</option>
-            <option value="Menambahkan" {{ request('aksi') == 'Menambahkan' ? 'selected' : '' }}>add</option>
-            <option value="Mengubah data" {{ request('aksi') == 'Mengubah data' ? 'selected' : '' }}>update</option>
-            <option value="Menghapus" {{ request('aksi') == 'Menghapus' ? 'selected' : '' }}>delete</option>
-        </select>
-
-        <button type="submit" class="bg-blue-600 text-white border border-black rounded-xl px-6 py-2  font-bold active:shadow-none active:translate-x-[2px] active:translate-y-[2px]">
-            Cari
-        </button>
-        
-        <a href="{{ route('inventory.logs') }}" class="bg-red-600 text-white border border-black rounded-xl px-4 py-2  flex items-center justify-center font-bold">
-            X
-        </a>
-    </form>
-
-    <div class="space-y-2">
-        <div class="grid grid-cols-[1.4fr_2.2fr_1.2fr_0.6fr_1.2fr] gap-4 px-4 py-2 text-sm font-bold text-gray-600 uppercase tracking-wider">
-            <div>Nama User</div>
-            <div>Nama Produk</div>
-            <div>Waktu</div>
-            <div class="text-center">Aksi</div>
+    <form id="filterForm" action="{{ route('inventory.logs') }}" method="GET" class="flex flex-col lg:flex-row gap-4 mb-8">
+        <div class="relative flex-grow">
+            <input type="text" name="search" id="searchInput" value="{{ request('search') }}" 
+                placeholder="Cari nama barang..." 
+                class="w-full pl-12 pr-4 py-2 rounded-2xl border border-gray-200 focus:border-[#003CBB] outline-none font-bold shadow-sm">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+            </div>
         </div>
 
+        <div class="flex flex-wrap gap-3">
+            <select name="user" onchange="this.form.submit()" 
+                class="px-4 py-2 rounded-2xl bg-white border border-gray-200 outline-none cursor-pointer hover:bg-gray-50 min-w-[150px]">
+                <option value="">Semua User</option>
+                @foreach($users as $u)
+                    <option value="{{ $u->username }}" {{ request('user') == $u->username ? 'selected' : '' }}>
+                        {{ $u->username }}
+                    </option>
+                @endforeach
+            </select>
+
+            <select name="aksi" onchange="this.form.submit()" 
+                class="px-4 py-2 rounded-2xl bg-white border border-gray-200 outline-none cursor-pointer hover:bg-gray-50 min-w-[175px]">
+                <option value="">Semua Aktifitas</option>
+                <option value="create" {{ request('aksi') == 'create' ? 'selected' : '' }}>create</option>
+                <option value="update" {{ request('aksi') == 'update' ? 'selected' : '' }}>update</option>
+                <option value="delete" {{ request('aksi') == 'delete' ? 'selected' : '' }}>delete</option>
+            </select>
+
+            @if(request('search') || request('user') || request('aksi'))
+                <a href="{{ route('inventory.logs') }}" 
+                    class="flex items-center justify-center px-4 bg-[#E50000] text-white rounded-2xl hover:bg-red-600 transition-all shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="4" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                </a>
+            @endif
+        </div>
+    </form>
+
+    <div class="grid grid-cols-[1.2fr_2fr_1.5fr_1.2fr] gap-4 px-4 py-2 text-sm font-medium text-gray-600 uppercase tracking-wider">
+        <div>Nama User</div>
+        <div>Nama Barang</div>
+        <div>Waktu</div>
+        <div class="text-center">Aktifitas</div>
+    </div>
+
+    <div class="space-y-2">
         @forelse($logs as $log)
-        <div class="grid grid-cols-[1.4fr_2.2fr_1.2fr_0.6fr_1.2fr] gap-4 items-center bg-white p-2 rounded-xl border border-gray-200 shadow-sm hover:border-[#003CBB] transition">
-            <div class="px-3 py-2 text-sm font-medium border border-gray-100 rounded-lg truncate bg-gray-50">{{ $log->username }}</div>
-            <div class="px-3 py-2 text-sm border border-gray-100 rounded-lg truncate text-gray-500">{{ $log->nama_item }}</div>
-            <div class="text-xs text-gray-400 font-bold uppercase tracking-tighter">
+        <div class="grid grid-cols-[1.2fr_2fr_1.5fr_1.2fr] gap-4 items-center bg-white p-2 rounded-xl border border-gray-200 shadow-sm transition">
+            <div class="px-3 py-2 text-sm font-medium border border-gray-100 rounded-lg bg-gray-50 uppercase">{{ $log->username }}</div>
+            <div class="px-3 py-2 text-sm font-medium border border-gray-100 rounded-lg truncate text-gray-700">{{ $log->nama_item }}</div>
+            <div class="px-3 py-2 text-[11px] border border-gray-100 rounded-lg text-gray-400 font-bold uppercase">
                 {{ $log->created_at->translatedFormat('d M Y, H:i') }}
             </div>
-            <div class="flex justify-center">
+            
+            <div class="flex gap-2 justify-center px-2">
                 @php
-                    $color = 'bg-blue-500';
-                    if($log->action == 'Menambahkan') $color = 'bg-green-600';
-                    if($log->action == 'Menghapus') $color = 'bg-red-600';
+                    $aksi = strtolower($log->action);
+                    $colorClass = 'bg-blue-100 text-blue-600';
+                    
+                    if($aksi == 'update') {
+                        $colorClass = 'bg-green-100 text-green-600';
+                    } elseif($aksi == 'delete') {
+                        $colorClass = 'bg-red-100 text-red-600';
+                    }
                 @endphp
-                <span class="{{ $color }} text-white text-xs font-black px-6 py-3 rounded-lg uppercase border border-black">
+                <span class="{{ $colorClass }} text-[10px] font-black py-2 rounded-lg uppercase border border-current flex-1 text-center">
                     {{ $log->action }}
                 </span>
+
+                @if($log->details)
+                <button onclick="openModal('{{ $log->nama_item }}', '{{ $log->details }}')" 
+                    class="bg-[#003CBB] text-white text-[10px] font-bold px-3 py-2 rounded-lg hover:bg-blue-800 transition">
+                    SHOW
+                </button>
+                @endif
             </div>
         </div>
         @empty
-        <div class="text-center py-10 border-2 border-dashed border-gray-300 rounded-xl text-gray-400 font-bold">
-            Tidak ada riwayat aktivitas yang ditemukan.
+        <div class="text-center py-10 text-gray-400 border-2 border-dashed border-gray-200 rounded-2xl">
+            Tidak ada riwayat aktifitas ditemukan.
         </div>
         @endforelse
     </div>
 </div>
+
+{{-- MODAL --}}
+<div id="detailModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50 p-4">
+    <div class="bg-white border-black rounded-2xl w-full max-w-md overflow-hidden">
+        <div class="p-6">
+            <h2 class="text-xl font-bold uppercase mb-1">Detail Perubahan</h2>
+            <p id="modalItemName" class="text-xs font-bold text-blue-600 uppercase mb-4"></p>
+            
+            <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm text-gray-700 font-medium leading-relaxed mb-6">
+                <p id="modalContent"></p>
+            </div>
+
+            <button onclick="closeModal()" class="w-full bg-red-600 text-white font-medium py-3 rounded-xl border-black active:shadow-none active:translate-x-1 active:translate-y-1 transition-all uppercase text-sm">
+                Tutup Detail
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let timeout = null;
+    const form = document.getElementById('filterForm');
+    const searchInput = document.getElementById('searchInput');
+
+    searchInput.addEventListener('keyup', function () {
+        clearTimeout(timeout);
+        timeout = setTimeout(function () {
+            form.submit();
+        }, 500);
+    });
+
+    function openModal(item, detail) {
+        document.getElementById('modalItemName').innerText = item;
+        document.getElementById('modalContent').innerText = detail;
+        document.getElementById('detailModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('detailModal').classList.add('hidden');
+    }
+</script>
 @endsection

@@ -96,20 +96,38 @@ public function index(Request $request) // Tambahin Request $request di sini
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        $item = item::findOrFail($id);
-        $request->validate([
-            'nama_item' => 'required',
-            'kode_item' => 'required|unique:inventory,kode_item,' . $item->id,
-            'deskripsi' => 'nullable',
-            'jenis_item' => 'required',
-            'jumlah_item' => 'required|integer',
-        ]);
-        $item->update($request->all());
-        riwayat::record('update', $request->nama_item);
-        return redirect()->route('inventory.index')->with('success', 'Item berhasil diperbarui');
+public function update(Request $request, string $id)
+{
+    $item = item::findOrFail($id);
+    
+    $request->validate([
+        'nama_item' => 'required',
+        'kode_item' => 'required|unique:inventory,kode_item,' . $item->id,
+        'deskripsi' => 'nullable',
+        'jenis_item' => 'required',
+        'jumlah_item' => 'required|integer',
+    ]);
+
+    $oldData = $item->getOriginal(); 
+    $item->update($request->all());
+    $changes = [];
+    $fields = ['nama_item', 'kode_item', 'jenis_item', 'jumlah_item'];
+
+    foreach ($fields as $field) {
+        if ($item->wasChanged($field)) {
+            $oldVal = $oldData[$field];
+            $newVal = $item->$field;
+            $label = str_replace('_item', '', $field);
+            $changes[] = "$label: $oldVal ⮕ $newVal";
+        }
     }
+    if (count($changes) > 0) {
+        $detailText = implode(', ', $changes);
+        riwayat::record('Update', $item->nama_item, $detailText);
+    }
+
+    return redirect()->route('inventory.index')->with('success', 'Item berhasil diperbarui');
+}
 
     /**
      * Remove the specified resource from storage.

@@ -26,7 +26,7 @@
                 </a>
 
                 <a href="{{ route('inventory.logs') }}" 
-                class="block px-4 py-3 rounded-xl font-medium transition {{ Request::is('/') ? 'bg-[#0055A5]' : 'hover:bg-gray-800' }}">
+                class="block px-4 py-3 rounded-xl font-medium transition {{ Request::is('logs') ? 'bg-[#0055A5]' : 'hover:bg-gray-800' }}">
                 Riwayat Aktifitas
                 </a>
             </nav>
