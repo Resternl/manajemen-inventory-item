@@ -98,8 +98,7 @@
     </div>
 </div>
 
-{{-- MODAL --}}
-<div id="detailModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50 p-4">
+<div id="detailModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
     <div class="bg-white border-black rounded-2xl w-full max-w-md overflow-hidden">
         <div class="p-6">
             <h2 class="text-xl font-bold uppercase mb-1">Detail Perubahan</h2>
