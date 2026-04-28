@@ -64,7 +64,7 @@
             <div class="px-3 py-2 text-sm font-medium border border-gray-100 rounded-lg bg-gray-50 uppercase">{{ $log->username }}</div>
             <div class="px-3 py-2 text-sm font-medium border border-gray-100 rounded-lg truncate text-gray-700">{{ $log->nama_item }}</div>
             <div class="px-3 py-2 text-[11px] border border-gray-100 rounded-lg text-gray-400 font-bold uppercase">
-                {{ $log->created_at->translatedFormat('d M Y, H:i') }}
+                {{ $log->created_at->setTimezone('Asia/Makassar')->translatedFormat('d M Y, H:i') }}
             </div>
             
             <div class="flex gap-2 justify-center px-2">
